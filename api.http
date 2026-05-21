@@ -1,0 +1,81 @@
+### Tamper-Evident Append-Only Log Service - API Client
+# Use the VS Code "REST Client" extension to run these requests directly inside your editor.
+
+@baseUrl = http://localhost:3000
+@apiKey = dev-api-key-change-in-production
+
+### 1. Health Check (No Auth Required)
+GET {{baseUrl}}/health
+Accept: application/json
+
+###
+
+### 2. Create Log Entry (Valid)
+POST {{baseUrl}}/log
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "actor": "alice",
+  "action": "document.create",
+  "payload": {
+    "documentId": "doc_xyz123",
+    "title": "Annual Strategy Report",
+    "confidential": true
+  }
+}
+
+###
+
+### 3. Create Log Entry (Invalid - Missing Fields for Zod Validation Check)
+POST {{baseUrl}}/log
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "actor": "",
+  "payload": {}
+}
+
+###
+
+### 4. Create Log Entry (Invalid - Unauthorized Key Check)
+POST {{baseUrl}}/log
+Content-Type: application/json
+x-api-key: WRONG_KEY_HERE
+
+{
+  "actor": "malicious",
+  "action": "bypass.auth",
+  "payload": {}
+}
+
+###
+
+### 5. Get Log Entry By ID
+# Change ID to an entry that exists in your SQLite database
+GET {{baseUrl}}/log/1
+x-api-key: {{apiKey}}
+Accept: application/json
+
+###
+
+### 6. Verify Entire Hash Chain Integrity
+GET {{baseUrl}}/verify
+x-api-key: {{apiKey}}
+Accept: application/json
+
+###
+
+### 7. Export Logs (All entries - Unfiltered)
+GET {{baseUrl}}/export
+x-api-key: {{apiKey}}
+Accept: application/json
+
+###
+
+### 8. Export Logs (Filtered by Actor & Date Range)
+# Note: Dates must be ISO-8601 compliant
+GET {{baseUrl}}/export?actor=alice&startDate=2026-05-21T00:00:00.000Z
+x-api-key: {{apiKey}}
+Accept: application/json
