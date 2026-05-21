@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Each log entry is immutable. The hash field chains this entry
+/// to the previous one, forming a tamper-evident linked list.
+model LogEntry {
+  id        Int      @id @default(autoincrement())
+  actor     String
+  action    String
+  payload   String   // Stored as JSON string
+  hash      String   @unique // SHA-256 hash of (id + actor + action + payload + prevHash)
+  prevHash  String?  // null for the genesis (first) entry
+  createdAt DateTime @default(now())
+
+  @@index([actor])
+  @@index([createdAt])
+}
