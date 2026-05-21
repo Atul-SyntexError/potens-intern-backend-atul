@@ -10,6 +10,9 @@ jobs:
   test:
     name: Build & Test
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "file:./dev.db"
+      API_KEY: "dev-api-key-change-in-production"
 
     steps:
       - name: Checkout repository
