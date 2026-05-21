@@ -91,8 +91,8 @@ Entry #3
 
 ```bash
 # Clone the repository
-git clone <repo-url>
-cd tamper-evident-log
+git clone https://github.com/Atul-SyntexError/potens-intern-backend-atul.git
+cd potens-intern-backend-atul
 
 # Install dependencies
 npm install
